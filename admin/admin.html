@@ -28,7 +28,7 @@
             box-sizing: border-box;
         }
 
-        /* TELA DE LOGIN COM BACKGROUND RESPONSIVO OTIMIZADO */
+        /* TELA DE LOGIN COM LAYOUT VERTICAL (IMAGEM EM CIMA, CAIXA EMBAIXO) */
         #tela-login {
             position: fixed;
             top: 0;
@@ -37,52 +37,38 @@
             height: 100vh;
             height: 100dvh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 999;
-            padding: 15px;
+            padding: 20px 15px;
             box-sizing: border-box;
+            overflow-y: auto;
             background-color: #121212;
-            background-image: url('../imagens/banner.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
         }
 
-        /* AJUSTE ESPECÍFICO PARA TELEMÓVEIS (EVITA ZOOM EXCESSIVO) */
-        @media (max-width: 768px) {
-            #tela-login {
-                background-image: url('../imagens/banner-mobile.jpg');
-                background-size: contain;
-                background-position: center;
-            }
-        }
-
-        /* CAMADA ESCURA PARA DESTACAR O CARTÃO */
-        #tela-login::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        #bg-login-img {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: 1;
-            pointer-events: none;
+            max-width: 380px;
+            height: auto;
+            max-height: 40vh;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         .login-card {
             position: relative;
             z-index: 2;
-            background: rgba(25, 25, 25, 0.9);
-            padding: 30px 20px;
+            background: rgba(25, 25, 25, 0.95);
+            padding: 25px 20px;
             border-radius: 16px;
             width: 100%;
             max-width: 380px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             border: 1px solid rgba(242, 140, 40, 0.4);
-            backdrop-filter: blur(6px);
         }
 
         .container {
@@ -266,11 +252,13 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN COM FUNDO RESPONSIVO E CARTÃO CENTRALIZADO -->
+    <!-- TELA DE LOGIN COM BANNER EM CIMA E CAIXA ABAIXO -->
     <div id="tela-login">
+        <img id="bg-login-img" src="../imagens/banner.jpg" alt="Banner Burger 301">
+        
         <div class="login-card">
-            <img src="../imagens/icone.png" alt="Logo Burger 301" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #f28c28; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 20px;">Área Restrita</h2>
+            <img src="../imagens/icone.png" alt="Logo Burger 301" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #f28c28; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <h2 style="margin-top: 0; margin-bottom: 18px; font-size: 18px;">Área Restrita</h2>
             
             <!-- Botão de Login com a Google -->
             <button type="button" id="btn-login-google" style="background-color: #db4437; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
@@ -278,12 +266,12 @@
                 Entrar com Conta Google
             </button>
 
-            <p id="erro-login" style="color: #ef4444; text-align: center; margin-top: 15px; font-size: 14px; word-break: break-all;"></p>
+            <p id="erro-login" style="color: #ef4444; text-align: center; margin-top: 12px; font-size: 13px; word-break: break-all;"></p>
             
-            <p style="font-size: 0.78rem; color: #ccc; text-align: center; margin-top: 25px; margin-bottom: 5px;">
+            <p style="font-size: 0.75rem; color: #ccc; text-align: center; margin-top: 20px; margin-bottom: 4px;">
                 © 2026 Burger 301 Todos os direitos reservados.
             </p>
-            <p style="font-size: 0.75rem; color: #aaa; text-align: center; margin-top: 8px; letter-spacing: 0.5px;">
+            <p style="font-size: 0.72rem; color: #aaa; text-align: center; margin-top: 6px; letter-spacing: 0.5px;">
                 Powered by <a href="https://www.instagram.com/cscode.solutions" target="_blank" style="color: #f28c28; text-decoration: none; font-weight: bold;">CS Code Solutions</a>
             </p>
         </div>
@@ -462,8 +450,20 @@
         </div>
     </div>
 
-    <!-- LÓGICA DE INSTALAÇÃO (PWA) -->
+    <!-- LÓGICA DE INSTALAÇÃO (PWA) E BANNER RESPONSIVO -->
     <script>
+        // Alternar automaticamente entre banner mobile e pc
+        const bgImg = document.getElementById('bg-login-img');
+        function ajustarBannerLogin() {
+            if (window.innerWidth <= 768) {
+                bgImg.src = '../imagens/banner-mobile.jpg';
+            } else {
+                bgImg.src = '../imagens/banner.jpg';
+            }
+        }
+        ajustarBannerLogin();
+        window.addEventListener('resize', ajustarBannerLogin);
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
