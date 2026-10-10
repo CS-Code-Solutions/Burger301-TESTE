@@ -28,7 +28,7 @@
             box-sizing: border-box;
         }
 
-        /* TELA DE LOGIN COM BACKGROUND RESPONSIVO PERFEITO */
+        /* TELA DE LOGIN COM BACKGROUND RESPONSIVO OTIMIZADO */
         #tela-login {
             position: fixed;
             top: 0;
@@ -42,17 +42,20 @@
             z-index: 999;
             padding: 15px;
             box-sizing: border-box;
-            overflow: hidden;
+            background-color: #121212;
+            background-image: url('../imagens/banner.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-        #bg-login-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
+        /* AJUSTE ESPECÍFICO PARA TELEMÓVEIS (EVITA ZOOM EXCESSIVO) */
+        @media (max-width: 768px) {
+            #tela-login {
+                background-image: url('../imagens/banner-mobile.jpg');
+                background-size: contain;
+                background-position: center;
+            }
         }
 
         /* CAMADA ESCURA PARA DESTACAR O CARTÃO */
@@ -64,12 +67,13 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.55);
-            z-index: 2;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .login-card {
             position: relative;
-            z-index: 3;
+            z-index: 2;
             background: rgba(25, 25, 25, 0.9);
             padding: 30px 20px;
             border-radius: 16px;
@@ -264,7 +268,6 @@
 
     <!-- TELA DE LOGIN COM FUNDO RESPONSIVO E CARTÃO CENTRALIZADO -->
     <div id="tela-login">
-        <img id="bg-login-img" src="../imagens/banner.jpg" alt="Fundo Burger 301">
         <div class="login-card">
             <img src="../imagens/icone.png" alt="Logo Burger 301" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #f28c28; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
             <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 20px;">Área Restrita</h2>
@@ -459,20 +462,8 @@
         </div>
     </div>
 
-    <!-- LÓGICA DE INSTALAÇÃO (PWA) E BANNER RESPONSIVO -->
+    <!-- LÓGICA DE INSTALAÇÃO (PWA) -->
     <script>
-        // Alternar automaticamente entre banner mobile e pc
-        const bgImg = document.getElementById('bg-login-img');
-        function ajustarBannerLogin() {
-            if (window.innerWidth <= 768) {
-                bgImg.src = '../imagens/banner-mobile.jpg';
-            } else {
-                bgImg.src = '../imagens/banner.jpg';
-            }
-        }
-        ajustarBannerLogin();
-        window.addEventListener('resize', ajustarBannerLogin);
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
