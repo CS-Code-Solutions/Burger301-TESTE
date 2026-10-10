@@ -685,6 +685,52 @@ if (formularioPedido) {
         dadosPedido.classList.remove("visivel");
     };
 }
+// =========================================
+// CONTROLE DO MENU HAMBÚRGUER E ROLAGEM
+// =========================================
+const btnMenuToggle = document.getElementById('btn-menu-toggle');
+const btnFecharMenu = document.getElementById('btn-fechar-menu');
+const menuLateral = document.getElementById('menu-lateral');
 
+if (btnMenuToggle) {
+    btnMenuToggle.addEventListener('click', () => {
+        menuLateral.classList.add('ativo');
+    });
+}
+
+if (btnFecharMenu) {
+    btnFecharMenu.addEventListener('click', () => {
+        menuLateral.classList.remove('ativo');
+    });
+}
+
+// Fecha o menu ao clicar fora dele
+window.addEventListener('click', (e) => {
+    if (menuLateral && menuLateral.classList.contains('ativo')) {
+        if (!menuLateral.contains(e.target) && !btnMenuToggle.contains(e.target)) {
+            menuLateral.classList.remove('ativo');
+        }
+    }
+});
+
+// Função para fechar o menu e navegar para o destino correto
+function fecharMenuEColar(alvoId) {
+    if (menuLateral) {
+        menuLateral.classList.remove('ativo');
+    }
+    
+    // Se o alvo for dúvidas, envia para o rodapé da página
+    if (alvoId === 'rodape-duvidas') {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        return;
+    }
+
+    // Rolagem para Hambúrgueres ou Porções
+    const secao = document.getElementById(alvoId);
+    if (secao) {
+        secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+window.fecharMenuEColar = fecharMenuEColar;
 reativarEventosBotoes();
 atualizarCarrinho();
