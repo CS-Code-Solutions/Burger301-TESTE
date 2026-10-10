@@ -223,6 +223,12 @@
                     <input type="password" id="senha" name="password" placeholder="Digite a senha" autocomplete="current-password" required>
                 </div>
                 <button type="submit" id="btn-entrar">Entrar no Painel</button>
+                
+                <!-- Botão de Login com a Google -->
+                <button type="button" id="btn-login-google" style="background-color: #db4437; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="#ffffff" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.19,4.73C14.07,4.73 15.55,5.37 16.68,6.48L18.7,4.45C17.08,2.97 14.85,2 12.19,2C6.74,2 2.24,6.5 2.24,12C2.24,17.5 6.74,22 12.19,22C17.64,22 21.34,18.15 21.34,12.5C21.34,11.97 21.29,11.53 21.35,11.1Z"/></svg>
+                    Entrar com a Conta Google
+                </button>
             </form>
             <p id="erro-login" style="color: #ef4444; text-align: center; margin-top: 10px; font-size: 14px; word-break: break-all;"></p>
             
@@ -437,7 +443,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBJlQENhh8DbqYLyTl4zwvyqLGRAIMz87Y",
@@ -949,7 +955,6 @@
                     editIdAdic.value = a.id;
                     adicNome.value = a.nome;
                     adicPreco.value = a.preco;
-                    btnSalVarAdicional = "Salvar Alterações";
                     btnSalvarAdicional.textContent = "Salvar Alterações";
                     btnCancelarEdicaoAdic.style.display = "block";
                     tituloFormAdicional.textContent = "✏️ Editar Adicional";
@@ -992,6 +997,39 @@
         function mostrarMensagem(texto) {
             msgSucesso.textContent = texto;
             setTimeout(() => { msgSucesso.textContent = ""; }, 4000);
+        }
+
+        // Lógica de Login com a Google e Validação da Whitelist do Firestore
+        const btnLoginGoogle = document.getElementById("btn-login-google");
+        const googleProvider = new GoogleAuthProvider();
+
+        if (btnLoginGoogle) {
+            btnLoginGoogle.addEventListener("click", async () => {
+                erroLogin.textContent = "";
+                try {
+                    const resultado = await signInWithPopup(auth, googleProvider);
+                    const emailUtilizador = resultado.user.email.toLowerCase();
+
+                    const docRef = doc(db, "configuracoes", "loja");
+                    const docSnap = await getDoc(docRef);
+
+                    let emailsPermitidos = [];
+                    if (docSnap.exists() && docSnap.data().emailsPermitidos) {
+                        emailsPermitidos = docSnap.data().emailsPermitidos.map(e => e.toLowerCase());
+                    } else {
+                        emailsPermitidos = ["seu-email@gmail.com"]; 
+                    }
+
+                    if (!emailsPermitidos.includes(emailUtilizador)) {
+                        await signOut(auth);
+                        erroLogin.textContent = "Acesso negado: Este e-mail não tem autorização para aceder ao painel.";
+                        return;
+                    }
+                } catch (error) {
+                    console.error("Erro no login Google:", error);
+                    erroLogin.textContent = "Erro ao autenticar com a Google: " + error.message;
+                }
+            });
         }
     </script>
 </body>
