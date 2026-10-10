@@ -28,41 +28,57 @@
             box-sizing: border-box;
         }
 
-        /* TELA DE LOGIN COM BACKGROUND RESPONSIVO */
+        /* TELA DE LOGIN COM BACKGROUND RESPONSIVO PERFEITO */
         #tela-login {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: url('../imagens/banner.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 999;
             padding: 15px;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
-        @media (max-width: 768px) {
-            #tela-login {
-                background-image: url('../imagens/banner-mobile.jpg');
-            }
+        #bg-login-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* CAMADA ESCURA PARA DESTACAR O CARTÃO */
+        #tela-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 2;
         }
 
         .login-card {
-            background: rgba(30, 30, 30, 0.9);
+            position: relative;
+            z-index: 3;
+            background: rgba(25, 25, 25, 0.9);
             padding: 30px 20px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            border: 1px solid #444;
-            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border: 1px solid rgba(242, 140, 40, 0.4);
+            backdrop-filter: blur(6px);
         }
 
         .container {
@@ -246,10 +262,11 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN COM BACKGROUND E LOGO -->
+    <!-- TELA DE LOGIN COM FUNDO RESPONSIVO E CARTÃO CENTRALIZADO -->
     <div id="tela-login">
+        <img id="bg-login-img" src="../imagens/banner.jpg" alt="Fundo Burger 301">
         <div class="login-card">
-            <img src="../imagens/icone.png" alt="Logo Burger 301" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 2px solid #f28c28;">
+            <img src="../imagens/icone.png" alt="Logo Burger 301" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #f28c28; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
             <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 20px;">Área Restrita</h2>
             
             <!-- Botão de Login com a Google -->
@@ -260,10 +277,10 @@
 
             <p id="erro-login" style="color: #ef4444; text-align: center; margin-top: 15px; font-size: 14px; word-break: break-all;"></p>
             
-            <p style="font-size: 0.8rem; color: #ccc; text-align: center; margin-top: 25px; margin-bottom: 5px;">
+            <p style="font-size: 0.78rem; color: #ccc; text-align: center; margin-top: 25px; margin-bottom: 5px;">
                 © 2026 Burger 301 Todos os direitos reservados.
             </p>
-            <p style="font-size: 0.78rem; color: #aaa; text-align: center; margin-top: 10px; letter-spacing: 0.5px;">
+            <p style="font-size: 0.75rem; color: #aaa; text-align: center; margin-top: 8px; letter-spacing: 0.5px;">
                 Powered by <a href="https://www.instagram.com/cscode.solutions" target="_blank" style="color: #f28c28; text-decoration: none; font-weight: bold;">CS Code Solutions</a>
             </p>
         </div>
@@ -442,8 +459,20 @@
         </div>
     </div>
 
-    <!-- LÓGICA DE INSTALAÇÃO (PWA) -->
+    <!-- LÓGICA DE INSTALAÇÃO (PWA) E BANNER RESPONSIVO -->
     <script>
+        // Alternar automaticamente entre banner mobile e pc
+        const bgImg = document.getElementById('bg-login-img');
+        function ajustarBannerLogin() {
+            if (window.innerWidth <= 768) {
+                bgImg.src = '../imagens/banner-mobile.jpg';
+            } else {
+                bgImg.src = '../imagens/banner.jpg';
+            }
+        }
+        ajustarBannerLogin();
+        window.addEventListener('resize', ajustarBannerLogin);
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
