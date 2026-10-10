@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Burger 301 - Hambúrgueres artesanais, porções e adicionais.">
-    <title>Burger 301 - Hambúrgueres artesanais</title>
+    <meta name="description" content="Burger 301 - Hambúrgueres artesanais, porções e adicionais.[cite: 13]">
+    <title>Burger 301 - Hambúrgueres artesanais[cite: 13]</title>
 
-    <!-- INSTRUÇÕES PARA IMPEDIR CACHE ANTIGO NOS CELULARES -->
+    <!-- INSTRUÇÕES PARA IMPEDIR CACHE ANTIGO NOS CELULARES[cite: 13] -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- CONFIGURAÇÕES DE APLICAÇÃO INSTALÁVEL (PWA) -->
+    <!-- CONFIGURAÇÕES DE APLICAÇÃO INSTALÁVEL (PWA)[cite: 13] -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f28c28">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,7 +20,7 @@
     <meta name="apple-mobile-web-app-title" content="Burger 301">
     <link rel="stylesheet" href="style.css?v=6">
     
-    <!-- FAVICON (ÍCONE DA ABA DO NAVEGADOR) -->
+    <!-- FAVICON (ÍCONE DA ABA DO NAVEGADOR)[cite: 13] -->
     <link rel="icon" href="imagens/icone.png" type="image/png">
 <style>
     .botao-instagram-rodape {
@@ -75,18 +75,27 @@
             <!-- LINK OCULTO PARA EVITAR ERRO NO SCRIPT.JS -->
             <a href="#cardapio" class="link-cardapio" style="display: none;">Cardápio</a>
 
-            <!-- DIREITA: BOTÃO DÚVIDAS (WHATSAPP) -->
+            <!-- DIREITA: MENU HAMBÚRGUER -->
             <div class="header-direita">
-                <a href="https://wa.me/5551981061618?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20cardápio." target="_blank" class="botao-whats-header" aria-label="Dúvidas no WhatsApp">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icone-whats" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                    </svg>
-                    <span>Dúvidas?</span>
-                </a>
+                <button type="button" id="btn-menu-toggle" class="btn-menu-hamburguer" aria-label="Abrir Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
 
         </div>
     </header>
+
+    <!-- MENU LATERAL / GAVETA -->
+    <nav id="menu-lateral" class="menu-lateral">
+        <button type="button" id="btn-fechar-menu" class="btn-fechar-menu">✕</button>
+        <ul class="menu-lista">
+            <li><a href="#" onclick="fecharMenuEColar('hamburgueres')">🍔 Hambúrgueres</a></li>
+            <li><a href="#" onclick="fecharMenuEColar('porcoes')">🍟 Porções</a></li>
+            <li><a href="#" onclick="fecharMenuEColar('rodape-duvidas')">❓ Dúvidas</a></li>
+        </ul>
+    </nav>
 
     <main>
         <!-- BANNER HERO DE ALTA CONVERSÃO -->
@@ -114,7 +123,7 @@
         <section id="cardapio" class="cardapio">
 
             <!-- HAMBÚRGUERES -->
-            <div class="titulo-secao">
+            <div id="hamburgueres" class="titulo-secao">
                 <h2>🍔 Hambúrgueres</h2>
                 <p>Escolha seu hambúrguer e personalize com nossos adicionais.</p>
             </div>
@@ -125,7 +134,7 @@
             </div>
 
             <!-- PORÇÕES -->
-            <div class="titulo-secao">
+            <div id="porcoes" class="titulo-secao">
                 <h2>🍟 Porções</h2>
                 <p>Complete seu pedido com nossas porções.</p>
             </div>
