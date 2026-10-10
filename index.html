@@ -1,370 +1,823 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Burger 301 - Hambúrgueres artesanais, porções e adicionais.">
-    <title>Burger 301 - Hambúrgueres artesanais</title>
+    <title>Ísis Holística | Loja Esotérica e Espaço Terapêutico</title>
+    <link rel="icon" type="image/png" href="ico.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        #carousel-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 460px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
 
-    <!-- INSTRUÇÕES PARA IMPEDIR CACHE ANTIGO NOS CELULARES -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+        .carousel-bg-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+        }
 
-    <!-- CONFIGURAÇÕES DE APLICAÇÃO INSTALÁVEL (PWA) -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f28c28">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Burger 301">
-    <link rel="stylesheet" href="style.css?v=6">
-    
-    <!-- FAVICON (ÍCONE DA ABA DO NAVEGADOR) -->
-    <link rel="icon" href="imagens/icone.png" type="image/png">
-<style>
-    .botao-instagram-rodape {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-        color: #fff;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 14px;
-        text-decoration: none;
-        margin: 15px auto 10px auto;
-        box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);
-        transition: transform 0.2s, opacity 0.2s;
-        max-width: 300px;
-        box-sizing: border-box;
-    }
-    .botao-instagram-rodape:hover {
-        transform: scale(1.02);
-        opacity: 0.95;
-    }
-    .icone-instagram {
-        width: 20px;
-        height: 20px;
-        fill: #fff;
-    }
-</style>
+        .carousel-img-pc { display: none; }
+        .carousel-img-mobile { display: block; }
+
+        @media (min-width: 768px) {
+            .carousel-img-pc { display: block; }
+            .carousel-img-mobile { display: none; }
+            #carousel-wrapper { min-height: 520px; }
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
+            z-index: 1;
+        }
+
+        .carousel-content {
+            position: absolute;
+            inset-x: 0;
+            bottom: 24px;
+            z-index: 2;
+            pointer-events: none;
+        }
+    </style>
 </head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-<body>
+    <!-- BARRA DE AVISO SUPERIOR -->
+    <div class="bg-[#0E8685] text-white text-xs sm:text-sm py-2 px-4 text-center font-medium tracking-wide">
+        ✨ Mais que produtos, energia para o seu dia a dia! Conheça nossa curadoria esotérica e terapias holísticas.
+    </div>
 
-    <!-- CABEÇALHO SUPERIOR -->
-    <header class="header-topo">
-        <div class="header-container">
+    <!-- CABEÇALHO LIMPO -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center cursor-pointer py-1" onclick="mudarAba('view-home')">
+                <img src="logo4.png" alt="Ísis Holística" class="h-16 md:h-20 w-auto object-contain pointer-events-none select-none" draggable="false" oncontextmenu="return false;">
+            </div>
             
-            <!-- ESQUERDA: LOGO + STATUS -->
-            <div class="header-esquerda">
-                <a href="#" class="logo-header">
-                    <span class="texto-burger">BURGER</span> <span class="texto-301">301</span>
-                </a>
-                
-                <!-- BADGE DE STATUS (ABERTO / FECHADO) -->
-                <div class="status-loja status-aberto">
-                    <span class="ponto-status"></span>
-                    <span>Aberto</span>
-                </div>
+            <nav class="hidden md:flex space-x-8 text-sm font-semibold items-center text-gray-700">
+                <button onclick="mudarAba('view-home')" class="hover:text-[#0E8685] transition">Início</button>
+                <button onclick="mudarAba('view-produtos'); filtrarProdutos('todos');" class="hover:text-[#0E8685] transition">Loja esotérica</button>
+                <button onclick="mudarAba('view-terapias')" class="hover:text-[#0E8685] transition">Espaço terapêutico</button>
+                <button onclick="mudarAba('view-quem-somos')" class="hover:text-[#0E8685] transition">Nossa essência</button>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleCartModal()" class="relative bg-gray-100 p-2.5 rounded-full hover:bg-gray-200 transition">
+                    🛒
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-[#C5A880] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden bg-gray-100 p-2.5 rounded-lg text-gray-700 font-bold">☰</button>
             </div>
+        </div>
 
-            <!-- LINK OCULTO PARA EVITAR ERRO NO SCRIPT.JS -->
-            <a href="#cardapio" class="link-cardapio" style="display: none;">Cardápio</a>
-
-            <!-- DIREITA: BOTÃO DÚVIDAS (WHATSAPP) -->
-            <div class="header-direita">
-                <a href="https://wa.me/5551981061618?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20cardápio." target="_blank" class="botao-whats-header" aria-label="Dúvidas no WhatsApp">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icone-whats" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                    </svg>
-                    <span>Dúvidas?</span>
-                </a>
-            </div>
-
+        <!-- MENU MOBILE -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3 shadow-lg">
+            <button onclick="mudarAba('view-home')" class="block w-full text-left py-2 font-semibold text-gray-700 hover:text-[#0E8685]">Início</button>
+            <button onclick="mudarAba('view-produtos'); filtrarProdutos('todos');" class="block w-full text-left py-2 font-semibold text-gray-700 hover:text-[#0E8685]">Loja Esotérica</button>
+            <button onclick="mudarAba('view-terapias')" class="block w-full text-left py-2 font-semibold text-gray-700 hover:text-[#0E8685]">Espaço Terapêutico</button>
+            <button onclick="mudarAba('view-quem-somos')" class="block w-full text-left py-2 font-semibold text-gray-700 hover:text-[#0E8685]">Nossa Essência</button>
         </div>
     </header>
 
-    <main>
-        <!-- BANNER HERO DE ALTA CONVERSÃO -->
-        <section class="banner-hero">
-            <div class="hero-overlay"></div>
-            <div class="hero-conteudo">
-                <span class="badge-exclusivo">🔥 ATENDIMENTO EXCLUSIVO NO CONDOMÍNIO</span>
-                <h1>Hambúrguer artesanal <br><span class="destaque-laranja">entregue direto na sua torre.</span></h1>
-                
-                <div class="hero-botoes">
-                    <a href="#cardapio" class="btn-hero-principal">
-                        <span class="icone-emoji">🍔</span> FAZER PEDIDO AGORA
-                    </a>
-                </div>
+    <!-- BARRA DE CONCEITO / VALORES -->
+    <div class="bg-white border-b border-gray-100 py-3 px-4 hidden sm:block">
+        <div class="max-w-7xl mx-auto flex justify-around items-center text-xs text-gray-600 font-medium">
+            <span class="flex items-center gap-1.5">🍃 Curadoria com propósito</span>
+            <span class="flex items-center gap-1.5">💎 Produtos com significado</span>
+            <span class="flex items-center gap-1.5">🤍 Atendimento acolhedor</span>
+            <span class="flex items-center gap-1.5">💬 Compre pelo WhatsApp</span>
+        </div>
+    </div>
 
-                <div class="hero-diferenciais">
-                    <span>⚡ Entrega rápida na torre</span>
-                    <span>•</span>
-                    <span>🥩 Blend 100% bovino</span>
+    <!-- INÍCIO -->
+    <section id="view-home" class="app-view flex-grow">
+        <!-- Banner / Carrossel principal -->
+        <div id="carousel-wrapper" onclick="clicarBannerAtual()" class="text-white py-16 px-6 text-center overflow-hidden transition-all duration-700">
+            <div class="carousel-overlay"></div>
+            <img id="carousel-img-mobile" class="carousel-bg-image carousel-img-mobile" src="42a30c25-4971-4e10-bb09-3021d82ce6ef.jpeg" alt="Banner Mobile">
+            <img id="carousel-img-pc" class="carousel-bg-image carousel-img-pc" src="42a30c25-4971-4e10-bb09-3021d82ce6ef.jpeg" alt="Banner PC">
+            <div class="max-w-3xl mx-auto px-4 carousel-content flex flex-col items-center justify-end pb-4" id="carousel-container">
+                <span id="carousel-badge" class="bg-[#C5A880] text-white text-xs font-bold uppercase px-3.5 py-1 rounded-full tracking-wider shadow mb-2">LOJA ESOTÉRICA & ESPAÇO TERAPÊUTICO</span>
+                <h2 id="carousel-title" class="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-2 leading-tight drop-shadow-md">O equilíbrio começa nos pequenos rituais.</h2>
+                <p id="carousel-desc" class="text-xs sm:text-sm md:text-base opacity-95 mb-4 max-w-xl mx-auto drop-shadow">Encontre produtos com significado e um espaço de acolhimento para a sua jornada.</p>
+                <div class="flex gap-3 pointer-events-auto">
+                    <button onclick="event.stopPropagation(); mudarAba('view-produtos'); filtrarProdutos('todos');" class="bg-[#0E8685] hover:bg-opacity-90 text-white font-bold px-5 py-2.5 rounded-xl shadow text-xs transition">Explore nossa loja ➔</button>
+                    <button onclick="event.stopPropagation(); mudarAba('view-terapias');" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold px-5 py-2.5 rounded-xl border border-white/40 shadow text-xs transition">Conheça as terapias ➔</button>
                 </div>
             </div>
-        </section>
-
-        <!-- CARDÁPIO -->
-        <section id="cardapio" class="cardapio">
-
-            <!-- HAMBÚRGUERES -->
-            <div class="titulo-secao">
-                <h2>🍔 Hambúrgueres</h2>
-                <p>Escolha seu hambúrguer e personalize com nossos adicionais.</p>
-            </div>
-
-            <!-- CONTAINER DINÂMICO DE HAMBÚRGUERES (ALIMENTADO PELO FIREBASE) -->
-            <div id="lista-hamburgueres">
-                <!-- Os produtos serão injetados aqui automaticamente -->
-            </div>
-
-            <!-- PORÇÕES -->
-            <div class="titulo-secao">
-                <h2>🍟 Porções</h2>
-                <p>Complete seu pedido com nossas porções.</p>
-            </div>
-
-            <!-- CONTAINER DINÂMICO DE PORÇÕES (ALIMENTADO PELO FIREBASE) -->
-            <div id="lista-porcoes">
-                <!-- As porções serão injetadas aqui automaticamente -->
-            </div>
-
-        </section>
-
-        <!-- MODAL DE PERSONALIZAÇÃO -->
-        <div id="modal-produto" class="modal" aria-hidden="true">
-            <div class="modal-conteudo">
-                <button type="button" id="fechar-modal" class="fechar-modal" aria-label="Fechar">×</button>
-
-                <h2 id="modal-nome-produto">Personalizar pedido</h2>
-                <p id="modal-descricao-produto" class="modal-descricao"></p>
-
-                <div class="modal-preco">
-                    <span>Preço:</span>
-                    <strong id="modal-preco-produto">R$ 0,00</strong>
-                </div>
-
-                <!-- ADICIONAIS -->
-                <div class="modal-secao">
-                    <h3>➕ Adicionais</h3>
-                    <p class="texto-ajuda">Selecione os adicionais desejados.</p>
-
-                    <div class="lista-adicionais">
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Bacon" data-preco="5.00">
-                            <span>Bacon</span>
-                            <strong>+ R$ 5,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Cebola caramelizada" data-preco="4.00">
-                            <span>Cebola caramelizada</span>
-                            <strong>+ R$ 4,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Abacaxi grelhado" data-preco="4.00">
-                            <span>Abacaxi grelhado</span>
-                            <strong>+ R$ 4,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Blend bovino 150g" data-preco="8.00">
-                            <span>Blend bovino 150g</span>
-                            <strong>+ R$ 8,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Smash bovino 75g" data-preco="5.00">
-                            <span>Smash bovino 75g</span>
-                            <strong>+ R$ 5,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Queijo cheddar" data-preco="6.00">
-                            <span>Queijo cheddar</span>
-                            <strong>+ R$ 6,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Queijo mussarela" data-preco="4.00">
-                            <span>Queijo mussarela</span>
-                            <strong>+ R$ 4,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Anéis de cebola" data-preco="4.00">
-                            <span>Anéis de cebola</span>
-                            <strong>+ R$ 4,00</strong>
-                        </label>
-
-                        <label class="adicional">
-                            <input type="checkbox" name="adicional" value="Pote de maionese extra" data-preco="2.00" data-apenas-porcao="true">
-                            <span>Pote de maionese extra</span>
-                            <strong>+ R$ 2,00</strong>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- QUANTIDADE -->
-                <div class="modal-secao quantidade-secao">
-                    <h3>Quantidade</h3>
-                    <div class="controle-quantidade">
-                        <button type="button" id="diminuir-quantidade">−</button>
-                        <span id="quantidade-produto">1</span>
-                        <button type="button" id="aumentar-quantidade">+</button>
-                    </div>
-                </div>
-
-                <!-- OBSERVAÇÃO DO PRODUTO -->
-                <div class="modal-secao">
-                    <h3>📝 Observação</h3>
-                    <textarea id="observacao-produto" class="observacao-produto" placeholder="Ex.: sem cebola, pouca maionese, bem passado..." rows="3"></textarea>
-                </div>
-
-                <!-- TOTAL -->
-                <div class="modal-total">
-                    <span>Total:</span>
-                    <strong id="modal-total">R$ 0,00</strong>
-                </div>
-
-                <button type="button" id="adicionar-carrinho-modal" class="botao-confirmar">ADICIONAR AO PEDIDO</button>
-            </div>
+            <button onclick="event.stopPropagation(); mudarSlide(-1);" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2.5 rounded-full z-20">❮</button>
+            <button onclick="event.stopPropagation(); mudarSlide(1);" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2.5 rounded-full z-20">❯</button>
         </div>
 
-        <!-- PAINEL DO CARRINHO -->
-        <aside id="carrinho" class="carrinho">
-            <div class="carrinho-painel">
-                <div class="carrinho-cabecalho">
+        <!-- Seção de Destaques -->
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-8">
+                <div>
+                    <span class="text-xs font-bold text-[#0E8685] uppercase tracking-wider">ESCOLHIDOS COM CARINHO</span>
+                    <h3 id="secao-destaques-titulo" class="text-2xl font-bold text-gray-900 mt-1">Seleção Ísis</h3>
+                </div>
+                <button onclick="mudarAba('view-produtos'); filtrarProdutos('todos');" class="text-sm font-bold text-[#0E8685] hover:underline self-start sm:self-auto whitespace-nowrap">Ver todos os produtos ➔</button>
+            </div>
+            <div id="home-destaques-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- QUEM SOMOS / NOSSA ESSÊNCIA -->
+    <section id="view-quem-somos" class="app-view hidden flex-grow py-16 px-4 bg-white">
+        <div class="max-w-5xl mx-auto space-y-12">
+            <div class="space-y-3">
+                <span class="text-[#0E8685] font-bold text-xs uppercase tracking-wider">RAIZES E PROPÓSITO</span>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Nossa essência</h3>
+                <p class="text-gray-500 text-sm">Mais que uma loja. Um encontro com você.</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-8 bg-[#F8F9FA] p-6 md:p-12 rounded-3xl border border-gray-100 shadow-sm">
+                <div class="w-48 md:w-64 flex-shrink-0 flex justify-center">
+                    <img src="logo.png" alt="Ísis Holística" class="w-full h-auto object-contain pointer-events-none select-none drop-shadow-md" draggable="false" oncontextmenu="return false;">
+                </div>
+                <div class="text-center md:text-left space-y-4">
+                    <h4 class="text-2xl font-bold text-gray-900">Ísis Holística</h4>
+                    <p class="text-gray-700 leading-relaxed text-sm">
+                        Nascemos do propósito de conectar você com sua melhor energia, equilíbrio e bem-estar. Em São Leopoldo, RS, reunimos produtos esotéricos e um espaço acolhedor dedicado ao autoconhecimento.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed text-sm">
+                        De cristais, aromas, acessórios e objetos com significado, nossa curadoria convida você a desacelerar e habitar o presente.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+                    <span class="text-2xl">🍃</span>
+                    <h5 class="font-bold text-gray-900">Curadoria com significado</h5>
+                    <p class="text-xs text-gray-600 leading-relaxed">Elementos naturais, aromas e objetos que acompanham sua jornada.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+                    <span class="text-2xl">🤍</span>
+                    <h5 class="font-bold text-gray-900">Acolhimento</h5>
+                    <p class="text-xs text-gray-600 leading-relaxed">Um olhar atento para cada pessoa e sua história.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+                    <span class="text-2xl">💎</span>
+                    <h5 class="font-bold text-gray-900">Sua própria essência</h5>
+                    <p class="text-xs text-gray-600 leading-relaxed">Um convite ao equilíbrio, à presença e ao autoconhecimento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="view-produtos" class="app-view hidden flex-grow max-w-7xl mx-auto px-4 py-12 w-full">
+        <div class="text-center mb-8">
+            <h3 class="text-2xl md:text-3xl font-bold text-[#0E8685]">Loja Esotérica</h3>
+            <p class="text-gray-600 mt-2">Explore nossa curadoria de produtos esotéricos e vibracionais.</p>
+            <div class="max-w-md mx-auto my-6">
+                <input type="text" id="input-busca" oninput="pesquisarProdutos(this.value)" placeholder="🔍 Pesquisar por nome ou propriedade..." class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685] shadow-sm">
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <button onclick="filtrarProdutos('todos')" class="px-4 py-2 rounded-full bg-[#0E8685] text-white text-xs font-bold transition shadow">Todos</button>
+                <button onclick="filtrarProdutos('Promoções')" class="px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow">🔥 Promoções</button>
+                <button onclick="filtrarProdutos('Incensos')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">🌿 Incensos</button>
+                <button onclick="filtrarProdutos('Pedras')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">🔮 Pedras e Cristais</button>
+                <button onclick="filtrarProdutos('Semijoias')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">✨ Semijoias</button>
+                <button onclick="filtrarProdutos('Decoracao')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">🏺 Decoração</button>
+                <button onclick="filtrarProdutos('Velas')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">🕯️ Velas</button>
+                <button onclick="filtrarProdutos('Imagens (Esculturas)')" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold transition">🗿 Imagens</button>
+            </div>
+        </div>
+        <div id="grid-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- ESPAÇO TERAPÊUTICO -->
+    <section id="view-terapias" class="app-view hidden flex-grow py-16 px-4 bg-white">
+        <div class="max-w-5xl mx-auto space-y-12">
+            <div class="space-y-3">
+                <span class="text-[#0E8685] font-bold text-xs uppercase tracking-wider">ATENDIMENTO ESPECIALIZADO</span>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Espaço terapêutico</h3>
+                <p class="text-gray-500 text-sm">Práticas integrativas voltadas à harmonização e ao equilíbrio.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-3">
+                    <span class="text-2xl">🤍</span>
+                    <h4 class="text-lg font-bold text-gray-900">Humanoterapia</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Um espaço de acolhimento e reconexão pessoal, com práticas voltadas ao bem-estar e ao autoconhecimento.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-3">
+                    <span class="text-2xl">🌿</span>
+                    <h4 class="text-lg font-bold text-gray-900">Psicanálise</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Escuta e investigação do inconsciente para compreender vivências, emoções e sua história.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-3">
+                    <span class="text-2xl">✨</span>
+                    <h4 class="text-lg font-bold text-gray-900">Radiestesia e radiônica</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Práticas integrativas voltadas à harmonização e ao equilíbrio, respeitando sua jornada pessoal.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-[#0E8685] text-white p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg">
+                <div class="space-y-1 text-center md:text-left">
+                    <span class="text-xs uppercase tracking-widest opacity-90 font-bold">SEU PRÓXIMO PASSO</span>
+                    <h4 class="text-2xl font-bold">Reserve um momento de cuidado.</h4>
+                    <p class="text-xs opacity-90">Consulte valores, duração das sessões e horários com nossa equipe.</p>
+                </div>
+                <a href="https://wa.me/555195508826?text=Olá!%20Gostaria%20de%20sugerir%20agendamento%20para%20terapias." target="_blank" rel="noreferrer" class="bg-[#25D366] text-white font-bold px-6 py-3.5 rounded-xl shadow transition hover:bg-opacity-90 whitespace-nowrap text-sm flex items-center gap-2">
+                    💬 Agendar pelo WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL DE DETALHES DO PRODUTO -->
+    <div id="modal-produto" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 md:p-8 pt-14 md:pt-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="fecharModalProduto()" class="absolute top-3 right-3 z-20 text-gray-500 hover:text-gray-800 font-bold text-lg bg-gray-100 hover:bg-gray-200 w-10 h-10 rounded-full flex items-center justify-center transition shadow-sm">✕</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="space-y-4">
+                    <div id="modal-img-container" class="relative h-72 bg-gray-100 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
+                        <img id="modal-img" src="" alt="Produto" class="w-full h-full object-cover">
+                        <div id="modal-badge-texto" class="absolute hidden bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md max-w-[80%] text-center"></div>
+                    </div>
+                    <div id="modal-variacoes-container" class="space-y-2">
+                        <label class="block text-xs font-bold text-gray-700 uppercase">Escolha a Variação / Detalhe:</label>
+                        <div id="modal-variantes-lista" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+                <div class="space-y-4 flex flex-col justify-between">
                     <div>
-                        <h2>🛒 Seu pedido</h2>
-                        <span id="quantidade-carrinho">0 itens</span>
+                        <span id="modal-categoria" class="bg-teal-50 text-[#0E8685] text-xs font-bold px-3 py-1 rounded-full uppercase"></span>
+                        <h3 id="modal-nome" class="text-2xl font-bold text-gray-900 mt-2"></h3>
+                        <p id="modal-preco" class="text-3xl font-extrabold text-[#C5A880] mt-2"></p>
+                        <p id="modal-descricao" class="text-gray-600 text-sm mt-4 leading-relaxed"></p>
                     </div>
-                </div>
-
-                <div id="itens-carrinho" class="itens-carrinho">
-                    <p class="carrinho-vazio">Seu carrinho está vazio.</p>
-                </div>
-
-                <div class="carrinho-total">
-                    <span>Total</span>
-                    <strong id="valor-total">R$ 0,00</strong>
-                </div>
-
-                <div class="carrinho-botoes">
-                    <button type="button" id="continuar-comprando" class="botao-continuar">CONTINUAR COMPRANDO</button>
-                    <button type="button" id="finalizar-pedido" class="botao-finalizar" disabled>FINALIZAR PEDIDO</button>
+                    <button onclick="adicionarProdutoAoCarrinhoModal()" class="w-full bg-[#0E8685] hover:bg-opacity-90 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-sm">🛒 Adicionar ao Carrinho</button>
                 </div>
             </div>
-        </aside>
-
-        <!-- BARRA FIXA DO CARRINHO -->
-        <div id="carrinho-flutuante" class="carrinho-flutuante">
-            <div>
-                <strong>🛒 Seu pedido</strong>
-                <span id="resumo-carrinho">0 itens • R$ 0,00</span>
-            </div>
-            <button type="button" id="abrir-carrinho">VER PEDIDO</button>
         </div>
+    </div>
 
-        <!-- DADOS DO CLIENTE -->
-        <section id="dados-pedido" class="dados-pedido">
-            <div class="titulo-secao">
-                <h2>📋 Seus dados</h2>
-                <p>Informe os dados para identificarmos seu pedido.</p>
+    <!-- MODAL DO CARRINHO DE COMPRAS -->
+    <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 md:p-8 pt-14 md:pt-8 relative max-h-[90vh] flex flex-col">
+            <button onclick="toggleCartModal()" class="absolute top-3 right-3 z-20 text-gray-500 hover:text-gray-800 font-bold text-lg bg-gray-100 hover:bg-gray-200 w-10 h-10 rounded-full flex items-center justify-center transition shadow-sm">✕</button>
+            <h3 class="text-2xl font-bold text-[#0E8685] mb-4">Seu Carrinho 🛒</h3>
+            
+            <div id="carrinho-itens-lista" class="flex-grow overflow-y-auto space-y-4 divide-y divide-gray-100 max-h-[50vh] pr-1"></div>
+
+            <div class="border-t pt-4 mt-4 space-y-3">
+                <div class="flex justify-between items-center text-lg font-bold text-gray-900">
+                    <span>Total:</span>
+                    <span id="carrinho-total" class="text-[#C5A880] text-2xl font-extrabold">R$ 0,00</span>
+                </div>
+                <button onclick="abrirCheckout()" class="w-full bg-[#0E8685] hover:bg-opacity-90 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2">
+                    🛍️ Prosseguir com Pedido
+                </button>
+                <button onclick="mudarAba('view-produtos'); toggleCartModal();" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition text-sm">
+                    Continuar Comprando
+                </button>
             </div>
+        </div>
+    </div>
 
-            <form id="formulario-pedido">
-                <div class="campo">
-                    <label for="nome">Nome *</label>
-                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+    <!-- MODAL DE CHECKOUT (DADOS DO CLIENTE) -->
+    <div id="modal-checkout" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 md:p-8 pt-14 md:pt-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="toggleCheckoutModal()" class="absolute top-3 right-3 z-20 text-gray-500 hover:text-gray-800 font-bold text-lg bg-gray-100 hover:bg-gray-200 w-10 h-10 rounded-full flex items-center justify-center transition shadow-sm">✕</button>
+            <h3 class="text-2xl font-bold text-[#0E8685] mb-4">Dados para Entrega 📋</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome Completo</label>
+                    <input type="text" id="chk-nome" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685]" placeholder="Seu nome completo">
                 </div>
-
-                <div class="campo">
-                    <label for="torre">Torre *</label>
-                    <input type="text" id="torre" name="torre" placeholder="Ex.: B" required>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">CPF</label>
+                    <input type="text" id="chk-cpf" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685]" placeholder="000.000.000-00">
                 </div>
-
-                <div class="campo">
-                    <label for="apartamento">Apartamento *</label>
-                    <input type="text" id="apartamento" name="apartamento" placeholder="Ex.: 301" required>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Telefone de Contato</label>
+                    <input type="text" id="chk-telefone" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685]" placeholder="(51) 99999-9999">
                 </div>
-
-                <div class="campo">
-                    <label>Forma de pagamento *</label>
-                    <label class="opcao-pagamento">
-                        <input type="radio" name="pagamento" value="Pix" required> 📱 Pix
-                    </label>
-                    <label class="opcao-pagamento">
-                        <input type="radio" name="pagamento" value="Dinheiro"> 💵 Dinheiro
-                    </label>
-                    <label class="opcao-pagamento">
-                        <input type="radio" name="pagamento" value="Cartão"> 💳 Cartão
-                    </label>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Endereço para Entrega</label>
+                    <textarea id="chk-endereco" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685]" placeholder="Rua, número, complemento, bairro, cidade e CEP"></textarea>
                 </div>
-
-                <div class="campo" id="campo-troco" style="display: none;">
-                    <label for="troco">Precisa de troco para quanto?</label>
-                    <input type="text" id="troco" name="troco" placeholder="Ex.: R$ 50,00 ou Não preciso">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Forma de Pagamento Desejada</label>
+                    <select id="chk-pagamento" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0E8685] bg-white">
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="A combinar">A combinar</option>
+                    </select>
                 </div>
+                <button onclick="finalizarPedidoWhatsApp()" class="w-full bg-[#25D366] hover:bg-opacity-90 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2 mt-2">
+                    💬 Finalizar Pedido via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
 
-                <div class="campo">
-                    <label for="observacao">Observação</label>
-                    <textarea id="observacao" name="observacao" rows="4" placeholder="Alguma observação geral sobre seu pedido?"></textarea>
-                </div>
+    <!-- MODAL DE SUCESSO / AVISO FLUTUANTE -->
+    <div id="modal-sucesso" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 md:p-8 relative text-center space-y-4">
+            <div class="text-5xl mb-2">✨</div>
+            <h3 class="text-2xl font-bold text-[#0E8685]">Pedido Enviado!</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+                Seu pedido será analisado com todo o cuidado e, o mais breve possível, entraremos em contato para compartilhar todas as informações necessárias.
+            </p>
+            <button onclick="concluirPedido()" class="w-full bg-[#0E8685] hover:bg-opacity-90 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm">
+                Concluir via WhatsApp 
+            </button>
+        </div>
+    </div>
 
-                <p class="informacao-entrega">
-                    📍 A entrega é realizada na entrada da torre do condomínio.
-                </p>
+    <!-- BOTÃO WHATSAPP FIXO -->
+    <a href="https://wa.me/555195508826" target="_blank" rel="noreferrer" class="fixed bottom-6 right-6 z-40 bg-[#25D366] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-3xl">💬</a>
 
-                <!-- BOTÃO DE ENVIAR PELO WHATSAPP -->
-                <button type="submit" class="botao-enviar">ENVIAR PEDIDO PELO WHATSAPP</button>
-
-                <!-- BOTÃO DE VOLTAR AO CARDÁPIO / CONTINUAR COMPRANDO -->
-                <button type="button" id="voltar-cardapio-dados" class="botao-voltar-cadastro">CONTINUAR COMPRANDO</button>
-            </form>
-        </section>
-    </main>
-
-    <!-- RODAPÉ -->
-    <footer class="rodape">
-        <h2>BURGER 301</h2>
-        <p class="slogan-rodape">"O sabor que inspira."</p>
-        <p>📍 Atendimento exclusivo aos moradores do condomínio.</p>
-        <p>Sexta e sábado • 19h30 às 22h</p>
-
-        <!-- BOTÃO DE DÚVIDAS -->
-        <a href="https://wa.me/5551981061618?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20cardápio." target="_blank" class="botao-duvidas-whatsapp">
-            💬 Dúvidas? Fale conosco no WhatsApp
-        </a>
-<a href="https://www.instagram.com/burger_301_poema?dlrf=MXZuZXhxcnlrcDZuNw==" target="_blank" class="botao-instagram-rodape">
-    <svg xmlns="http://www.w3.org/2000/svg" class="icone-instagram" viewBox="0 0 24 24">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-    </svg>
-    <span>Siga a gente no Instagram</span>
-</a>
-        <!-- ASSINATURA CS CODE SOLUTIONS COM LINK DO INSTAGRAM -->
-        <p style="font-size: 0.78rem; color: #aaa; margin-top: 10px; letter-spacing: 0.5px;">
-            Powered by <a href="https://www.instagram.com/cs_code_solutions?srtk=Ym1mNDMzYTYxa3d6" target="_blank" style="color: #f28c28; font-weight: bold; text-decoration: none;">CS Code Solutions</a>
-        </p>
+    <!-- RODAPÉ LIMPO -->
+    <footer class="bg-white border-t border-gray-100 py-10 px-4 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Ísis Holística" class="h-10 w-auto object-contain">
+                <span class="text-xs text-gray-500">Produtos com significado. Cuidado com a sua essência.</span>
+            </div>
+            <div class="text-xs text-gray-400 text-center md:text-right">
+                Ísis Holística &copy; 2026 — São Leopoldo - RS<br>
+                <span>Powered by <strong class="text-gray-600">CS Code Solutions</strong></span>
+            </div>
+        </div>
     </footer>
-    <!-- SCRIPT PARA FORÇAR A PÁGINA A ABRIR SEMPRE NO TOPO -->
-    <script>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                window.scrollTo(0, 0);
-            }, 10);
-        });
+
+    <!-- SCRIPT DE INTEGRAÇÃO COM FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACzkdrx9HUFoZE-emtGCx4SXLX9w7F4w",
+            authDomain: "isis-holistica.firebaseapp.com",
+            projectId: "isis-holistica",
+            storageBucket: "isis-holistica.firebasestorage.app",
+            messagingSenderId: "18451242035",
+            appId: "1:18451242035:web:2bc1df8c53716bdbd6a1746"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let currentSlide = 0;
+        let listaProdutos = [];
+        let slides = [];
+        let carouselTimer = null;
+        let produtoAtualModal = null;
+        let fotoSelecionadaModalIndex = 0;
+        let mensagemWhatsAppPendente = "";
+        
+        let carrinho = [];
+        try {
+            carrinho = JSON.parse(localStorage.getItem('carrinho_isis')) || [];
+        } catch (e) {
+            carrinho = [];
+        }
+
+        async function carregarDadosDoBanco() {
+            try {
+                const querySnapshotProd = await getDocs(collection(db, "produtos"));
+                listaProdutos = [];
+                querySnapshotProd.forEach((docSnap) => {
+                    listaProdutos.push({ idFirestore: docSnap.id, ...docSnap.data() });
+                });
+
+                const querySnapshotSlides = await getDocs(collection(db, "slides"));
+                slides = [];
+                querySnapshotSlides.forEach((docSnap) => {
+                    slides.push({ idFirestore: docSnap.id, ...docSnap.data() });
+                });
+
+                renderizarDestaquesHome();
+                renderizarProdutosLoja('todos');
+                inicializarCarrossel();
+                atualizarContadorCarrinho();
+            } catch (e) {
+                console.error("Erro ao carregar dados do Firebase:", e);
+            }
+        }
+
+        carregarDadosDoBanco();
+
+        window.mudarAba = function(idAba) {
+            document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
+            const alvo = document.getElementById(idAba);
+            if (alvo) alvo.classList.remove('hidden');
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.toggleMobileMenu = function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function inicializarCarrossel() {
+            if (slides.length > 0) atualizarSlideUI();
+        }
+
+        function programarProximoSlide() {
+            if (carouselTimer) clearTimeout(carouselTimer);
+            if (slides.length <= 1) return;
+
+            const s = slides[currentSlide];
+            const tempoSegundos = Number(s?.tempo) || 5; 
+
+            carouselTimer = setTimeout(() => {
+                window.mudarSlide(1);
+            }, tempoSegundos * 1000);
+        }
+
+        function atualizarSlideUI() {
+            const s = slides[currentSlide];
+            if (!s) return;
+            
+            const badgeEl = document.getElementById('carousel-badge');
+            if (s.badge && s.badge.trim() !== '') {
+                badgeEl.innerText = s.badge;
+                badgeEl.style.display = '';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+
+            const titleEl = document.getElementById('carousel-title');
+            if (s.titulo && s.titulo.trim() !== '') {
+                titleEl.innerText = s.titulo;
+                titleEl.style.display = '';
+            } else {
+                titleEl.style.display = 'none';
+            }
+
+            const descEl = document.getElementById('carousel-desc');
+            if (s.desc && s.desc.trim() !== '') {
+                descEl.innerText = s.desc;
+                descEl.style.display = '';
+            } else {
+                descEl.style.display = 'none';
+            }
+            
+            const imgPc = document.getElementById('carousel-img-pc');
+            const imgMobile = document.getElementById('carousel-img-mobile');
+
+            imgPc.src = s.imagemPc || '42a30c25-4971-4e10-bb09-3021d82ce6ef.jpeg';
+            imgPc.style.display = '';
+
+            imgMobile.src = s.imagemMobile || '42a30c25-4971-4e10-bb09-3021d82ce6ef.jpeg';
+            imgMobile.style.display = '';
+
+            programarProximoSlide();
+        }
+
+        window.mudarSlide = function(direcao) {
+            if (slides.length === 0) return;
+            currentSlide = (currentSlide + direcao + slides.length) % slides.length;
+            atualizarSlideUI();
+        }
+
+        window.clicarBannerAtual = function() {
+            const s = slides[currentSlide];
+            if (!s) return;
+
+            if (s.linkTipo === 'terapias') {
+                mudarAba('view-terapias');
+            } else if (s.linkTipo === 'promocoes') {
+                mudarAba('view-produtos');
+                filtrarProdutos('Promoções');
+            } else if (s.linkTipo === 'destaques') {
+                mudarAba('view-home');
+                const el = document.getElementById('home-destaques-grid');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            } else if (s.linkTipo === 'categoria' && s.linkAlvo) {
+                mudarAba('view-produtos');
+                filtrarProdutos(s.linkAlvo);
+            } else if (s.linkTipo === 'produto' && s.linkAlvo) {
+                const prod = listaProdutos.find(p => p.nome === s.linkAlvo);
+                if (prod) abrirModalProdutoId(prod.idFirestore);
+                else mudarAba('view-produtos');
+            } else {
+                mudarAba('view-produtos');
+                filtrarProdutos('todos');
+            }
+        }
+
+        window.abrirModalProdutoId = function(idFirestore) {
+            const p = listaProdutos.find(item => item.idFirestore === idFirestore);
+            if (!p) return;
+            produtoAtualModal = p;
+            fotoSelecionadaModalIndex = 0;
+
+            document.getElementById('modal-nome').innerText = p.nome;
+            document.getElementById('modal-preco').innerText = `R$ ${Number(p.preco).toFixed(2).replace('.', ',')}`;
+            document.getElementById('modal-categoria').innerText = p.categoria;
+            document.getElementById('modal-descricao').innerText = p.descricao || '';
+
+            atualizarVisualizacaoModalFoto();
+            renderizarBotoesVariacoesModal();
+
+            document.getElementById('modal-produto').classList.remove('hidden');
+        }
+
+        window.fecharModalProduto = function() {
+            document.getElementById('modal-produto').classList.add('hidden');
+        }
+
+        window.selecionarVariacaoModal = function(index) {
+            fotoSelecionadaModalIndex = index;
+            atualizarVisualizacaoModalFoto();
+            renderizarBotoesVariacoesModal();
+        }
+
+        function atualizarVisualizacaoModalFoto() {
+            if (!produtoAtualModal || !produtoAtualModal.imagens || produtoAtualModal.imagens.length === 0) return;
+            const imgData = produtoAtualModal.imagens[fotoSelecionadaModalIndex] || produtoAtualModal.imagens[0];
+            
+            const imgEl = document.getElementById('modal-img');
+            imgEl.src = imgData.url || '';
+
+            const badgeEl = document.getElementById('modal-badge-texto');
+            if (imgData.texto && imgData.texto.trim() !== '') {
+                badgeEl.innerText = imgData.texto;
+                badgeEl.style.display = 'block';
+
+                badgeEl.className = "absolute bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md max-w-[80%] text-center ";
+                if (imgData.posV === 'bottom') badgeEl.className += "bottom-4 ";
+                else badgeEl.className += "top-4 ";
+
+                if (imgData.posH === 'right') badgeEl.className += "right-4";
+                else badgeEl.className += "left-4";
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
+
+        function renderizarBotoesVariacoesModal() {
+            const container = document.getElementById('modal-variantes-lista');
+            const wrapper = document.getElementById('modal-variacoes-container');
+            container.innerHTML = '';
+
+            if (!produtoAtualModal.imagens || produtoAtualModal.imagens.length <= 1) {
+                wrapper.classList.add('hidden');
+                return;
+            }
+
+            wrapper.classList.remove('hidden');
+            produtoAtualModal.imagens.forEach((img, idx) => {
+                const nomeVariacao = img.texto || `Opção ${idx + 1}`;
+                const isSelected = idx === fotoSelecionadaModalIndex;
+                
+                container.innerHTML += `
+                    <button onclick="selecionarVariacaoModal(${idx})" class="px-3.5 py-2 rounded-xl text-xs font-bold transition border ${isSelected ? 'bg-[#0E8685] text-white border-[#0E8685] shadow' : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'}">
+                        ${nomeVariacao}
+                    </button>
+                `;
+            });
+        }
+
+        window.adicionarProdutoAoCarrinhoModal = function() {
+            if (!produtoAtualModal) return;
+
+            const imagemSelecionada = (produtoAtualModal.imagens && produtoAtualModal.imagens[fotoSelecionadaModalIndex]) 
+                ? produtoAtualModal.imagens[fotoSelecionadaModalIndex].url 
+                : ((produtoAtualModal.imagens && produtoAtualModal.imagens.length > 0) ? produtoAtualModal.imagens[0].url : (produtoAtualModal.imagem || ''));
+
+            const variacaoTexto = (produtoAtualModal.imagens && produtoAtualModal.imagens[fotoSelecionadaModalIndex] && produtoAtualModal.imagens[fotoSelecionadaModalIndex].texto) 
+                ? produtoAtualModal.imagens[fotoSelecionadaModalIndex].texto 
+                : 'Padrão';
+
+            const itemCarrinho = {
+                id: produtoAtualModal.idFirestore,
+                nome: produtoAtualModal.nome,
+                preco: Number(produtoAtualModal.preco),
+                variacao: variacaoTexto,
+                imagem: imagemSelecionada
+            };
+
+            carrinho.push(itemCarrinho);
+            localStorage.setItem('carrinho_isis', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+
+            fecharModalProduto();
+            toggleCartModal();
+        }
+
+        window.toggleCartModal = function() {
+            const modal = document.getElementById('modal-carrinho');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderizarCarrinho();
+            }
+        }
+
+        window.abrirCheckout = function() {
+            if (carrinho.length === 0) {
+                alert("O seu carrinho está vazio!");
+                return;
+            }
+            toggleCartModal();
+            document.getElementById('modal-checkout').classList.remove('hidden');
+        }
+
+        window.toggleCheckoutModal = function() {
+            document.getElementById('modal-checkout').classList.toggle('hidden');
+        }
+
+        function atualizarContadorCarrinho() {
+            const contadorEl = document.getElementById('cart-count');
+            if (contadorEl) {
+                contadorEl.innerText = carrinho.length;
+            }
+        }
+
+        function renderizarCarrinho() {
+            const container = document.getElementById('carrinho-itens-lista');
+            const totalEl = document.getElementById('carrinho-total');
+            container.innerHTML = '';
+
+            if (carrinho.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-gray-400 text-sm">O seu carrinho está vazio.</div>`;
+                totalEl.innerText = 'R$ 0,00';
+                return;
+            }
+
+            let total = 0;
+            carrinho.forEach((item, index) => {
+                total += item.preco;
+                container.innerHTML += `
+                    <div class="flex items-center gap-4 py-3 first:pt-0">
+                        <img src="${item.imagem}" alt="${item.nome}" class="w-16 h-16 object-cover rounded-xl border border-gray-100 flex-shrink-0">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${item.nome}</h4>
+                            <p class="text-xs text-[#0E8685] font-semibold mt-0.5">Variação: ${item.variacao}</p>
+                            <p class="text-sm font-extrabold text-[#C5A880] mt-1">R$ ${item.preco.toFixed(2).replace('.', ',')}</p>
+                        </div>
+                        <button onclick="removerDoCarrinho(${index})" class="text-gray-400 hover:text-red-500 font-bold p-2 text-sm">🗑️</button>
+                    </div>
+                `;
+            });
+
+            totalEl.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        window.removerDoCarrinho = function(index) {
+            carrinho.splice(index, 1);
+            localStorage.setItem('carrinho_isis', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+            renderizarCarrinho();
+        }
+
+        window.finalizarPedidoWhatsApp = function() {
+            const nome = document.getElementById('chk-nome').value.trim();
+            const cpf = document.getElementById('chk-cpf').value.trim();
+            const telefone = document.getElementById('chk-telefone').value.trim();
+            const endereco = document.getElementById('chk-endereco').value.trim();
+            const pagamento = document.getElementById('chk-pagamento').value;
+
+            if (!nome || !cpf || !telefone || !endereco) {
+                alert("Por favor, preencha todos os campos de cadastro e endereço!");
+                return;
+            }
+
+            let mensagem = `✨ *Novo Pedido - Ísis Holística* ✨\n\n`;
+            mensagem += `👤 *Nome:* ${nome}\n`;
+            mensagem += `📄 *CPF:* ${cpf}\n`;
+            mensagem += `📞 *Telefone:* ${telefone}\n`;
+            mensagem += `📍 *Endereço:* ${endereco}\n`;
+            mensagem += `💳 *Forma de Pagamento:* ${pagamento}\n\n`;
+            mensagem += `🛒 *Itens do Pedido:*\n`;
+
+            let total = 0;
+            carrinho.forEach((item, idx) => {
+                mensagem += `${idx + 1}. *${item.nome}* (${item.variacao}) - R$ ${item.preco.toFixed(2).replace('.', ',')}\n`;
+                total += item.preco;
+            });
+
+            mensagem += `\n💰 *Subtotal Produtos:* R$ ${total.toFixed(2).replace('.', ',')}\n\nAguardo seu retorno!`;
+
+            mensagemWhatsAppPendente = mensagem;
+
+            document.getElementById('modal-checkout').classList.add('hidden');
+            document.getElementById('modal-sucesso').classList.remove('hidden');
+        }
+
+        window.concluirPedido = function() {
+            if (mensagemWhatsAppPendente) {
+                const url = `https://wa.me/555195508826?text=${encodeURIComponent(mensagemWhatsAppPendente)}`;
+                window.open(url, '_blank');
+                mensagemWhatsAppPendente = "";
+            }
+
+            carrinho = [];
+            localStorage.removeItem('carrinho_isis');
+            atualizarContadorCarrinho();
+            document.getElementById('modal-sucesso').classList.add('hidden');
+            mudarAba('view-home');
+        }
+
+        function renderizarDestaquesHome() {
+            const container = document.getElementById('home-destaques-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            const destaques = listaProdutos.filter(p => p.destaque);
+            if (destaques.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-gray-400">Nenhum produto em destaque no momento.</div>`;
+                return;
+            }
+            destaques.forEach(p => {
+                const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0].url : (p.imagem || '');
+                container.innerHTML += `
+                    <div onclick='abrirModalProdutoId("${p.idFirestore}")' class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col justify-between border border-gray-100 cursor-pointer group">
+                        <div>
+                            <div class="relative h-64 bg-gray-100 overflow-hidden">
+                                <img src="${imgCapa}" alt="${p.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-3 left-3 bg-[#C5A880] text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">Destaque</span>
+                            </div>
+                            <div class="p-6">
+                                <span class="text-xs font-semibold text-[#0E8685] uppercase tracking-wider">${p.categoria}</span>
+                                <h4 class="font-bold text-lg mt-1.5 text-gray-800 line-clamp-1">${p.nome}</h4>
+                                <p class="text-2xl font-extrabold text-[#C5A880] mt-3">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</p>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0"><span class="w-full block text-center bg-[#0E8685] text-white font-semibold py-3 rounded-xl text-sm shadow-sm">Ver Detalhes & Energia</span></div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderizarProdutosLoja(categoriaFiltro, termoBusca = '') {
+            const container = document.getElementById('grid-produtos');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            let filtrados = listaProdutos.filter(p => categoriaFiltro === 'todos' || p.categoria === categoriaFiltro);
+            
+            if (termoBusca.trim() !== '') {
+                const termo = termoBusca.toLowerCase();
+                filtrados = filtrados.filter(p => 
+                    p.nome.toLowerCase().includes(termo) || 
+                    (p.descricao || '').toLowerCase().includes(termo) ||
+                    p.categoria.toLowerCase().includes(termo)
+                );
+            }
+
+            if (filtrados.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">Nenhum produto encontrado.</div>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
+                const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0].url : (p.imagem || '');
+                container.innerHTML += `
+                    <div onclick='abrirModalProdutoId("${p.idFirestore}")' class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col justify-between border border-gray-100 cursor-pointer group">
+                        <div>
+                            <div class="relative h-64 bg-gray-100 overflow-hidden">
+                                <img src="${imgCapa}" alt="${p.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-3 left-3 bg-[#C5A880] text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">${p.categoria}</span>
+                            </div>
+                            <div class="p-6">
+                                <span class="text-xs font-semibold text-[#0E8685] uppercase tracking-wider">${p.categoria}</span>
+                                <h4 class="font-bold text-lg mt-1.5 text-gray-800 line-clamp-1">${p.nome}</h4>
+                                <p class="text-2xl font-extrabold text-[#C5A880] mt-3">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</p>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0"><span class="w-full block text-center bg-[#0E8685] text-white font-semibold py-3 rounded-xl text-sm shadow-sm">Ver Detalhes & Energia</span></div>
+                    </div>
+                `;
+            });
+        }
+
+        window.pesquisarProdutos = function(termo) { renderizarProdutosLoja('todos', termo); }
+        window.filtrarProdutos = function(cat) {
+            const inputBusca = document.getElementById('input-busca');
+            if (inputBusca) inputBusca.value = '';
+            renderizarProdutosLoja(cat);
+        }
     </script>
-
-    <!-- JAVASCRIPT PRINCIPAL -->
-    <script type="module" src="script.js"></script>
 </body>
-
 </html>
